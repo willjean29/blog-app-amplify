@@ -1,6 +1,7 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import "../amplify-config";
+import Navbar from "./navbar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -12,7 +13,13 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+
+      <body className={inter.className}>
+        <Navbar />
+        <div className='py-8 px-16 bg-slate-100'>
+          {children}
+        </div>
+      </body>
     </html>
   );
 }

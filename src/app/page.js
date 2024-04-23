@@ -25,8 +25,8 @@ export default function Home() {
 
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <h1 className="text-4xl font-bold">My posts</h1>
+    <main className="">
+      <h1 className='text-3xl font-semibold tracking-wide mt-6 mb-8'>Posts</h1>
       {
         posts.map((post) => (
           <div key={post.id} className="bg-gray-100 p-4 my-4 w-1/2">

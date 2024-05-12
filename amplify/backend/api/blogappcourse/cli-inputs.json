@@ -6,10 +6,15 @@
     "defaultAuthType": {
       "mode": "API_KEY",
       "expirationTime": 365,
-      "apiKeyExpirationDate": "2025-05-12T04:33:42.270Z",
+      "apiKeyExpirationDate": "2025-05-12T20:33:19.263Z",
       "keyDescription": "token to connect to api blogcourse"
     },
     "conflictResolution": {},
-    "additionalAuthTypes": []
+    "additionalAuthTypes": [
+      {
+        "mode": "AMAZON_COGNITO_USER_POOLS",
+        "cognitoUserPoolId": "authblogappcourse2a7ed751"
+      }
+    ]
   }
 }

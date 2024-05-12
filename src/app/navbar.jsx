@@ -31,7 +31,7 @@ const Navbar = () => {
       await getCurrentUser();
       setSignedUser(true);
     } catch (err) {
-      setSignedUser(false);
+      // setSignedUser(false);
     }
   };
   return (
@@ -48,11 +48,9 @@ const Navbar = () => {
       ))}
       {
         signedUser && (
-          <Link href="/my-posts">
-            <a className='rounded-lg px-3 py-2 text-slate-700
+          <Link href="/my-posts" className='rounded-lg px-3 py-2 text-slate-700
               font-medium hover:bg-slate-100 hover:text-slate-900'>
-              My Posts
-            </a>
+            My Posts
           </Link>
         )
       }

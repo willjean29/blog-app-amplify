@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { listPosts } from '../graphql/queries';
-import { client } from '@/amplify-config';
+import { client } from './amplify-config';
 
 export default function Home() {
   const [posts, setPosts] = useState([])
@@ -13,10 +13,8 @@ export default function Home() {
         const posts = await client.graphql({
           query: listPosts
         });
-        console.log({ posts })
         setPosts(posts.data.listPosts.items)
       } catch (error) {
-        console.log({ error });
       }
     }
 

@@ -1,8 +1,9 @@
-import { Inter } from "next/font/google";
-import "./globals.css";
-import "../amplify-config";
-import Navbar from "./navbar";
 
+import { Inter } from "next/font/google";
+import Navbar from "./navbar";
+import RootLayoutThatConfiguresAmplifyOnTheClient from "./amplify-config";
+import "./globals.css";
+import '@aws-amplify/ui-react/styles.css';
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
@@ -15,10 +16,15 @@ export default function RootLayout({ children }) {
     <html lang="en">
 
       <body className={inter.className}>
-        <Navbar />
-        <div className='py-8 px-16 bg-slate-100'>
-          {children}
-        </div>
+        <RootLayoutThatConfiguresAmplifyOnTheClient>
+          <>
+            <Navbar />
+            <div className='py-8 px-16 bg-slate-100'>
+              {children}
+            </div>
+          </>
+        </RootLayoutThatConfiguresAmplifyOnTheClient>
+
       </body>
     </html>
   );

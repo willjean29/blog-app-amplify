@@ -8,6 +8,8 @@ import SimpleMDE from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
 import { Authenticator } from "@aws-amplify/ui-react";
 import Image from "next/image";
+import { uploadData } from 'aws-amplify/storage';
+
 export default function CreatePost() {
   const [newPost, setNewPost] = useState({
     title: '',
@@ -27,16 +29,23 @@ export default function CreatePost() {
   const createNewPost = async () => {
     if (!title || !content) return;
     const id = uuid();
+    newPost.id = id;
     console.log({ title, content })
+    if (image) {
+      const filename = `${image.name}_${uuid()}`;
+      newPost.coverImage = filename;
+      const result = await uploadData({
+        key: filename,
+        path: `/public/${filename}`,
+        data: image,
+      }).result;
+      console.log('Succeeded: ', result);
+    }
     try {
       await client.graphql({
         query: createPost,
         variables: {
-          input: {
-            id,
-            title,
-            content
-          }
+          input: newPost
         },
         authMode: 'userPool'
       })

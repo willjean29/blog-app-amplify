@@ -37,6 +37,7 @@ export default function CreatePost() {
         },
         authMode: 'userPool'
       })
+      router.push(`/posts/${id}`)
     } catch (error) {
       console.log({ error })
     }

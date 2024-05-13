@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { listPosts } from '../graphql/queries';
 import { client } from './amplify-config';
+import Link from 'next/link';
 
 export default function Home() {
   const [posts, setPosts] = useState([])
@@ -26,10 +27,14 @@ export default function Home() {
     <main className="">
       <h1 className='text-3xl font-semibold tracking-wide mt-6 mb-8'>Posts</h1>
       {
-        posts.map((post) => (
-          <div key={post.id} className="bg-gray-100 p-4 my-4 w-1/2">
-            <h2 className="text-2xl font-bold">{post.title}</h2>
-          </div>
+        posts.map((post, index) => (
+          <Link key={index} href={`/posts/${post.id}`}>
+            <div key={post.id} className="cursor-pointer border-b border-gray-300 mt-8 pb-4">
+              <h2 className="text-xl font-bold">{post.title}</h2>
+              <p className="text-gray-500 mt-2">Author: {post.username}</p>
+            </div>
+          </Link>
+
         ))
       }
     </main>

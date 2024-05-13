@@ -17,7 +17,7 @@ function Profile() {
     } catch (err) {
     }
   }
-  if (!session) return null;
+  // if (!session) return null;
   return (
     <Authenticator>
       {({ user, signOut }) => (

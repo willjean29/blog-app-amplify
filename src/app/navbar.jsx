@@ -18,6 +18,7 @@ const Navbar = () => {
 
   const authListener = async () => {
     Hub.listen('auth', (data) => {
+      console.log({ data });
       switch (data.payload.event) {
         case 'signedIn':
           setSignedUser(true);

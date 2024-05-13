@@ -29,7 +29,6 @@ export default function Home() {
         posts.map((post) => (
           <div key={post.id} className="bg-gray-100 p-4 my-4 w-1/2">
             <h2 className="text-2xl font-bold">{post.title}</h2>
-            <p className="text-gray-800">{post.content}</p>
           </div>
         ))
       }

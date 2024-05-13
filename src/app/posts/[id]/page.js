@@ -1,7 +1,7 @@
 
 "use client";
 import { client } from "@/app/amplify-config";
-import { listPosts, getPost } from "@/graphql/queries";
+import { getPost } from "@/graphql/queries";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import ReactMarkDown from "react-markdown";

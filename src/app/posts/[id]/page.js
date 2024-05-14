@@ -2,10 +2,14 @@
 "use client";
 import { client } from "@/app/amplify-config";
 import { getPost } from "@/graphql/queries";
+import { createComment } from "@/graphql/mutations";
 import { getUrl } from "aws-amplify/storage";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import ReactMarkDown from "react-markdown";
+import { v4 as uuid } from 'uuid';
+import SimpleMDE from "react-simplemde-editor";
+import "easymde/dist/easymde.min.css";
 
 export default function PostById() {
   const [post, setPost] = useState({
@@ -14,8 +18,10 @@ export default function PostById() {
     username: ''
   })
   const [image, setImage] = useState(null);
+  const [comment, setComment] = useState('');
+  const [showEditor, setShowEditor] = useState(false);
   const params = useParams();
-
+  const router = useRouter();
   useEffect(() => {
     const getPostById = async () => {
       try {
@@ -48,6 +54,31 @@ export default function PostById() {
     getPostById();
   }, [params.id])
 
+  const onToggleEditor = () => {
+    setShowEditor(!showEditor);
+  }
+
+  const createNewComment = async () => {
+    const newComment = {
+      id: uuid(),
+      postID: params.id,
+      message: comment
+    }
+    try {
+      const result = await client.graphql({
+        query: createComment,
+        variables: {
+          input: newComment
+        },
+        authMode: 'userPool'
+      })
+      console.log({ result })
+      router.push('/my-posts')
+    } catch (error) {
+      console.log({ error });
+    }
+  }
+
   return (
     <div>
       <h1 className="text-5xl font-semibold tracking-wide">{post.title}</h1>
@@ -62,6 +93,25 @@ export default function PostById() {
         <ReactMarkDown className='prose'>
           {post.content}
         </ReactMarkDown>
+      </div>
+      <div className="my-2">
+        <button type="button" className="mb-4 bg-green-600 text-white font-semibold px-8 py-2 rounded-lg" onClick={
+          () => onToggleEditor()
+        }>Write a comment</button>
+
+        <div style={{ display: showEditor ? 'block' : 'none' }}>
+          <SimpleMDE
+            value={comment}
+            onChange={(value) => setComment(value)}
+          />
+          <button type="button" className="mb-4 bg-blue-600 text-white font-semibold px-8 py-2 rounded-lg" onClick={
+            () => {
+              createNewComment()
+            }
+          }>Save</button>
+        </div>
+
+
       </div>
     </div>
   );

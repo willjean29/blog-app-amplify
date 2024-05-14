@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { listPosts } from '../graphql/queries';
 import { client } from './amplify-config';
 import Link from 'next/link';
+import { getUrl } from 'aws-amplify/storage';
 
 export default function Home() {
   const [posts, setPosts] = useState([])
@@ -14,7 +15,20 @@ export default function Home() {
         const posts = await client.graphql({
           query: listPosts
         });
-        setPosts(posts.data.listPosts.items)
+
+        const { items } = posts.data.listPosts;
+
+        const postsWithImages = await Promise.all(items.map(async post => {
+          if (post.coverImage) {
+            const result = await getUrl({
+              key: post.coverImage,
+              options: { level: 'public' }
+            });
+            post.coverImage = result.url;
+          }
+          return post;
+        }));
+        setPosts(postsWithImages)
       } catch (error) {
       }
     }
@@ -29,10 +43,19 @@ export default function Home() {
       {
         posts.map((post, index) => (
           <Link key={index} href={`/posts/${post.id}`}>
-            <div key={post.id} className="cursor-pointer border-b border-gray-300 mt-8 pb-4">
-              <h2 className="text-xl font-bold">{post.title}</h2>
-              <p className="text-gray-500 mt-2">Author: {post.username}</p>
+            <div className="mt-6 pb-6 border-b border-gray-300">
+              {
+                post.coverImage && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={post.coverImage} className='w-36 h-36 bg-contain bg-center rounded-full sm:mx-0 sm:shrink-0' alt="image to post" />
+                )
+              }
+              <div key={post.id} className="cursor-pointer border-b border-gray-300 mt-8 pb-4">
+                <h2 className="text-xl font-bold">{post.title}</h2>
+                <p className="text-gray-500 mt-2">Author: {post.username}</p>
+              </div>
             </div>
+
           </Link>
 
         ))

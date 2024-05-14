@@ -6,6 +6,7 @@ import { postsByUsername } from "@/graphql/queries";
 import Link from "next/link";
 import Moment from "moment";
 import { deletePost } from "@/graphql/mutations";
+import { getUrl } from "aws-amplify/storage";
 
 export default function MyPosts() {
   const [posts, setPosts] = useState([])
@@ -22,7 +23,19 @@ export default function MyPosts() {
           username: `${currentUser.userId}::${currentUser.username}`
         }
       })
-      setPosts(data.postsByUsername.items);
+      const { items } = data.postsByUsername;
+      const postsWithImages = await Promise.all(items.map(async post => {
+        if (post.coverImage) {
+          const result = await getUrl({
+            key: post.coverImage,
+            options: { level: 'public' }
+          });
+          post.coverImage = result.url;
+        }
+        return post;
+      }));
+      setPosts(postsWithImages)
+      // setPosts(data.postsByUsername.items);
     } catch (err) {
     }
   }
@@ -50,6 +63,12 @@ export default function MyPosts() {
           className='py-8 px-8 max-w-xxl mx-auto bg-white rounded-xl shadow-lg space-y-2 sm:py-1 sm:flex 
           sm:items-center sm:space-y-0 sm:space-x-6 mb-2'
         >
+          {
+            post.coverImage && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={post.coverImage} className='w-36 h-36 bg-contain bg-center rounded-full sm:mx-0 sm:shrink-0' alt="image to post" />
+            )
+          }
           <div className='text-center space-y-2 sm:text-left'>
             <div className='space-y-0.5'>
               <p className='text-lg text-black font-semibold'>{post.title}</p>

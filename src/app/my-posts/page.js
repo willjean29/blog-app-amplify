@@ -21,9 +21,11 @@ export default function MyPosts() {
         query: postsByUsername,
         variables: {
           username: `${currentUser.userId}::${currentUser.username}`
-        }
+        },
+        authMode: 'userPool'
       })
       const { items } = data.postsByUsername;
+      console.log({ items })
       const postsWithImages = await Promise.all(items.map(async post => {
         if (post.coverImage) {
           const result = await getUrl({

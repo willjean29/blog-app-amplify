@@ -28,6 +28,7 @@ export default function Home() {
           }
           return post;
         }));
+        console.log({ postsWithImages })
         setPosts(postsWithImages)
       } catch (error) {
       }
@@ -50,10 +51,25 @@ export default function Home() {
                   <img src={post.coverImage} className='w-36 h-36 bg-contain bg-center rounded-full sm:mx-0 sm:shrink-0' alt="image to post" />
                 )
               }
-              <div key={post.id} className="cursor-pointer border-b border-gray-300 mt-8 pb-4">
+              <div key={post.id} className="cursor-pointer pb-4">
                 <h2 className="text-xl font-bold">{post.title}</h2>
                 <p className="text-gray-500 mt-2">Author: {post.username}</p>
+                {post.comments.items.length > 0 &&
+                  post.comments.items.map((comment, index) => (
+                    <div
+                      key={index}
+                      className='py-8 px-8 max-w-xl mx-auto bg-white rounded-xl 
+                    shadow-lg space-y-2 sm:py-1 sm:flex 
+                    my-6 sm:items-center sm:space-y-0 sm:space-x-6 mb-2'
+                    >
+                      <div>
+                        <p className='text-gray-500 mt-2'>{comment.message}</p>
+                        <p className='text-gray-200 mt-1'>{comment.createdBy}</p>
+                      </div>
+                    </div>
+                  ))}
               </div>
+
             </div>
 
           </Link>

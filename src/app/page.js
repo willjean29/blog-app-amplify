@@ -5,10 +5,11 @@ import { listPosts } from '../graphql/queries';
 import { client } from './amplify-config';
 import Link from 'next/link';
 import { getUrl } from 'aws-amplify/storage';
+import { newOnCreatePost } from '@/graphql/subscriptions';
 
 export default function Home() {
   const [posts, setPosts] = useState([])
-
+  const [post, setPost] = useState([]);
   useEffect(() => {
     const getAllPosts = async () => {
       try {
@@ -35,8 +36,27 @@ export default function Home() {
     }
 
     getAllPosts();
-  }, [])
+  }, [post])
 
+  useEffect(() => {
+    let subOnCreate;
+    const listenSubscriptions = async () => {
+      subOnCreate = await client.graphql({
+        query: newOnCreatePost
+      }).subscribe((postData) => {
+        console.log({ postData });
+        setPost(postData)
+      })
+    }
+
+    listenSubscriptions();
+
+    return () => {
+      if (subOnCreate) {
+        subOnCreate.unsubscribe();
+      }
+    }
+  }, [])
 
   return (
     <main className="">
